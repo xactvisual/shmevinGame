@@ -8,7 +8,9 @@
 		private var instructionsFour:MovieClip;				private var app:MovieClip;
 		private var pause:MovieClip;
 		private var options:MovieClip;
-		private var extras:MovieClip;		//keep track of current state		private var curState:String;		public function Main() {			// constructor code			//start with intro state			intro = new IntroState();			this.addChild(intro);			curState = "intro";		}		//STATE CHANGER METHOD		//- one custom function to change to any new state 		//  (just pass it the right string value)		//- make it public so you can change states from within any of the states		public function changeState(newState:String):void {			//first remove the current state			trace("\nRemoving "+curState+" state...");			switch (curState) {				case "intro" :					this.removeChild(intro);
+		private var extras:MovieClip;
+		
+		public var infinite:Boolean;		//keep track of current state		private var curState:String;		public function Main() {			// constructor code			//start with intro state			intro = new IntroState();			this.addChild(intro);			curState = "intro";		}		//STATE CHANGER METHOD		//- one custom function to change to any new state 		//  (just pass it the right string value)		//- make it public so you can change states from within any of the states		public function changeState(newState:String):void {			//first remove the current state			trace("\nRemoving "+curState+" state...");			switch (curState) {				case "intro" :					this.removeChild(intro);
 					//clean up and set to null for garbage collection
 					intro.clean();
 					intro = null;					break;				case "menu" :					this.removeChild(menu);
@@ -39,6 +41,12 @@
 					//clean up and set to null for garbage collection
 					app.clean();
 					app = null;					break;
+				case "app2" :
+					this.removeChild(app);
+					//clean up and set to null for garbage collection
+					app.clean();
+					app = null;
+					break;
 				case "pause" :
 					this.removeChild(pause);
 					//clean up and set to null for garbage collection
@@ -113,6 +121,13 @@
 					app = new AppState();
 					app.y = 0-app.height;					this.addChild(app);
 					TweenLite.to(app, 0.5, {x:0, y:0, ease:Circ.easeInOut});					break;
+				case "app2" :
+					app = new AppState();
+					app.y = 0-app.height;
+					infinite = true;
+					this.addChild(app);
+					TweenLite.to(app, 0.5, {x:0, y:0, ease:Circ.easeInOut});
+					break;
 				case "pause" :
 					pause = new PauseState();
 					pause.y = 0-pause.height;

@@ -27,6 +27,7 @@ package  com.myDomain.myApp{
 		var computers:MovieClip;
 		var computersBack:MovieClip;
 		var keyboards:MovieClip;
+		var whiteboard:MovieClip;
 		var gum:MovieClip;
 		var copter:MovieClip;
 		var hand:MovieClip;
@@ -42,9 +43,10 @@ package  com.myDomain.myApp{
 		var middle:Number = 500;
 		var deskTop:Number = 1400;
 		
-		var gravity:Number = 6;
+		var gravity:Number = 12;
 		
 		var distance:Number = 0;
+		
 		
 		var paused:Boolean = false;
 		
@@ -79,7 +81,7 @@ package  com.myDomain.myApp{
 		
 		var mouseSpeed:Number = 10;
 		
-		var jumpPower:Number = 100;
+		var jumpPower:Number = 140;
 		
 		var riddingSpeed:Number = 50;
 		
@@ -186,6 +188,17 @@ package  com.myDomain.myApp{
 			
 			ctrl.visible = false;
 			
+			// whiteboard //
+			whiteboard = new Whiteboard();
+			
+			whiteboard.x = 0;
+			whiteboard.y = -1500;
+			whiteboard.scaleX = 2;
+			whiteboard.scaleY = whiteboard.scaleX;
+			
+			levelRotate.addChild(whiteboard);
+			
+			// desk //
 			desk = new Desk();
 			
 			desk.x = 0;
@@ -407,6 +420,7 @@ package  com.myDomain.myApp{
 				distance += playerXV*0.001;
 				
 				// background MovieClips //
+				whiteboard.x -= backgroundXV*0.5;
 				computersBack.x -= backgroundXV*0.7;
 				computers.x -= backgroundXV;
 				keyboards.x -= backgroundXV*1.1;
@@ -418,10 +432,15 @@ package  com.myDomain.myApp{
 				computers.x = 0;
 				keyboards.x = 0;
 			}
+			
+			if (whiteboard.x < -35000) {
+				whiteboard.x = 0;
+			}
 		} // paralax />
 		
 		// foreground //
 		public function foreground():void {
+			
 			
 			if (hand.x > -3000) {
 				
@@ -560,7 +579,7 @@ package  com.myDomain.myApp{
 						
 						playerYV = 0;
 						
-						forceY -= 20;
+						forceY -= 30;
 						
 						TweenLite.to(copters[k], 0.6, {x:copters[k].x, y:800, ease:Back.easeIn});
 						
@@ -587,14 +606,61 @@ package  com.myDomain.myApp{
 						
 						hitTimer.start();
 						
-					} else if (copters[k].bottomHit.hitTestObject(player.hitBox)) {
+					} else if (copters[k].bottomHit.hitTestObject(player.headBox)) {
 						
 						playerYV = 0;
 						
-						forceY += 100;
+						forceY += 130;
 						
-						energy -= 30;
+						if (coinsGot > 0) {
 						
+							energy -= 30;
+							
+							for (var w:Number = 0; w < randRange(1, 3) && coinsGot > 0; w++) {
+								
+								coin = new Coin();
+								
+								coin.x = player.x + 200;
+								coin.y = player.y + 100;
+								coin.scaleX = 2.5;
+								coin.scaleY = 2.5;
+								
+								levelRotate.addChild(coin);
+								
+								coins.push(coin);
+								
+								if (coinsGot > 0) {
+									coinsGot -= 1;
+								}
+								
+								TweenLite.to(coin, randRange(100, 200)/200, {x:player.x + randRange(200, 600), y:0, scaleX:3, scaleY:3, ease:Bounce.easeOut});
+								
+							}
+							
+							for (var h:Number = 0; h < randRange(1, 3)  && coinsGot > 0; h++) {
+								
+								coin = new Coin();
+								
+								coin.x = player.x - 100;
+								coin.y = player.y + 100;
+								coin.scaleX = 2.5;
+								coin.scaleY = 2.5;
+								
+								levelRotate.addChild(coin);
+								
+								coins.push(coin);
+								
+								if (coinsGot > 0) {
+									coinsGot -= 1;
+								} 
+								
+								TweenLite.to(coin, randRange(100, 200)/200, {x:player.x - randRange(200, 600), y:0, scaleX:3, scaleY:3, ease:Bounce.easeOut});
+								
+							}
+							
+						} else {
+							health -= 1;
+						}
 						
 						hit = true;
 						
